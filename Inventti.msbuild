@@ -41,7 +41,7 @@
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\$(PastaVersaoWebTargets)\WebApplications\Microsoft.WebApplication.targets" />
 
   <!-- Sobreescreve o NUnit do MSBuild Community com o do TeamCity -->
-  <UsingTask TaskName="NUnit" Condition=" '$(teamcity_dotnet_nunitlauncher_msbuild_task)' != '' " AssemblyFile="$(teamcity_dotnet_nunitlauncher_msbuild_task)"/>
+  <UsingTask TaskName="NUnitTeamCity" Condition=" '$(teamcity_dotnet_nunitlauncher_msbuild_task)' != '' " AssemblyFile="$(teamcity_dotnet_nunitlauncher_msbuild_task)" />
 
   <ItemGroup>
 
@@ -212,9 +212,9 @@
     <CreateItem Include="%(ProjetoTeste.RelativeDir)\$(OutputPathTeste)\$(ConfigurationTeste)\%(ProjetoTeste.Filename).dll">
       <Output TaskParameter="Include" ItemName="ProjetoTesteDLL" />
     </CreateItem>
-    
+
     <!-- Realiza testes unitarios dos projetos -->
-    <NUnit Assemblies="@(ProjetoTesteDLL)" ToolPath="$(NUnitToolPath)" />
+    <NUnitTeamCity Assemblies="@(ProjetoTesteDLL)" ToolPath="$(NUnitToolPath)" />
   
   </Target>
   
