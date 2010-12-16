@@ -1,0 +1,56 @@
+<Configuration>
+  <SettingsComponent>
+    <string />
+    <integer />
+    <boolean>
+      <setting name="SolutionAnalysisEnabled">False</setting>
+    </boolean>
+  </SettingsComponent>
+  <RecentFiles>
+    <RecentFiles>
+      <File id="4B1821B8-CB74-4178-9BC3-1DA24D726C3F/f:CalculadoraTest.cs" caret="0" fromTop="0" />
+      <File id="A92B6A03-4E1C-47D8-8B8D-56A759346A1B/f:Calculadora.cs" caret="0" fromTop="0" />
+      <File id="A92B6A03-4E1C-47D8-8B8D-56A759346A1B/f:Program.cs" caret="0" fromTop="0" />
+    </RecentFiles>
+    <RecentEdits>
+      <File id="4B1821B8-CB74-4178-9BC3-1DA24D726C3F/f:CalculadoraTest.cs" caret="171" fromTop="8" />
+      <File id="4B1821B8-CB74-4178-9BC3-1DA24D726C3F/f:CalculadoraTest.cs" caret="297" fromTop="13" />
+      <File id="4B1821B8-CB74-4178-9BC3-1DA24D726C3F/f:CalculadoraTest.cs" caret="43" fromTop="0" />
+      <File id="4B1821B8-CB74-4178-9BC3-1DA24D726C3F/f:CalculadoraTest.cs" caret="432" fromTop="20" />
+    </RecentEdits>
+  </RecentFiles>
+  <NAntValidationSettings>
+    <NAntPath value="" />
+  </NAntValidationSettings>
+  <UnitTestRunner>
+    <Providers />
+  </UnitTestRunner>
+  <UnitTestRunnerNUnit>
+    <NUnitInstallDir>C:\Program Files\NUnit 2.5.9\bin\net-2.0\</NUnitInstallDir>
+    <UseAddins>Never</UseAddins>
+  </UnitTestRunnerNUnit>
+  <CompletionStatisticsManager>
+    <ItemStatistics item="Default">
+      <Item value="TestFixture" priority="0" />
+      <Item value="SetUp" priority="0" />
+      <Item value="public" priority="0" />
+      <Item value="void" priority="0" />
+      <Item value="private" priority="0" />
+      <Item value="CalculadoraTest`0" priority="1" />
+      <Item value="calculadora" priority="1" />
+      <Item value="new" priority="0" />
+      <Item value="Calculadora" priority="0" />
+      <Item value="using" priority="0" />
+      <Item value="SharpTestsEx" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:Projeto.Calculadora">
+      <Item value="Soma`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Single">
+      <Item value="Should`0" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:SharpTestsEx.IComparableConstraints`1">
+      <Item value="Be" priority="0" />
+    </ItemStatistics>
+  </CompletionStatisticsManager>
+</Configuration>

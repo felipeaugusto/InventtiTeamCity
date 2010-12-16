@@ -1,0 +1,218 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Project DefaultTargets="ReleaseAll" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <PropertyGroup>
+
+    <Versao Condition=" '$(Versao)' == '' ">undefined</Versao>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <OutputPath Condition=" '$(OutputPath)' == '' ">bin\$(Platform)</OutputPath>
+    <PastaVersaoWebTargets Condition=" '$(PastaVersaoWebTargets)' == '' ">v10.0</PastaVersaoWebTargets>
+    <DrivePadrao Condition=" '$(DrivePadrao)' == '' ">$(HOMEDRIVE)</DrivePadrao>
+    
+    <!-- Testes -->
+    <NUnitToolPath Condition=" '$(NUnitToolPath)' == '' ">$(DrivePadrao)\Program Files\NUnit 2.5.9\bin\net-2.0</NUnitToolPath>
+    <ConfigurationTeste Condition=" '$(ConfigurationTeste)' == '' ">Debug</ConfigurationTeste>
+    <PlatformTeste Condition=" '$(PlatformTeste)' == '' ">AnyCPU</PlatformTeste>
+    <OutputPathTeste Condition=" '$(OutputPathTeste)' == '' ">bin</OutputPathTeste>
+
+    <!-- Solution -->
+    <PastaSolution Condition=" '$(PastaSolution)' == '' ">$(DrivePadrao)\Dev\InventtiTeamCity</PastaSolution>
+    <ArquivoSolution Condition=" '$(ArquivoSolution)' == '' ">Projeto.sln</ArquivoSolution>
+    <Solution>$(PastaSolution)\$(ArquivoSolution)</Solution>
+
+    <!-- Pastas release -->
+    <PastaRelease Condition=" '$(PastaRelease)' == '' ">$(DrivePadrao)\Users\felipe\Inventti</PastaRelease>
+    <PastaVersao>v_$(Versao)</PastaVersao>
+    <PastaDestino>$(PastaRelease)\$(PastaVersao)</PastaDestino>
+
+    <PastaInstalacao>$(PastaDestino)\1.Instalação</PastaInstalacao>
+    <PastaScripts>$(PastaInstalacao)\1.ScriptsNfePack</PastaScripts>
+    <PastaAtualizacao>$(PastaDestino)\2.Atualização</PastaAtualizacao>
+    <PastaInstalador>$(PastaDestino)\3.Instalador</PastaInstalador>
+    
+  </PropertyGroup>
+
+  <!-- Importa targets do MSBuild para utilizar em testes unitarios, por exemplo  -->
+  <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets"/>
+  
+  <!-- Importa targets web para utilizar em deploy e publish, por exemplo -->
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\$(PastaVersaoWebTargets)\WebApplications\Microsoft.WebApplication.targets" />
+
+  <ItemGroup>
+
+    <!-- Projetos -->
+    <Projeto Include="$(PastaSolution)\Projeto\Projeto.csproj">
+      <Numero>1</Numero>
+      <PastaDestino>Projeto</PastaDestino>
+    </Projeto>
+
+    <!-- Projetos web -->
+    <ProjetoWeb Include="$(PastaSolution)\ProjetoWeb\ProjetoWeb.csproj">
+      <Numero>2</Numero>
+      <PastaDestino>ProjetoWeb</PastaDestino>
+    </ProjetoWeb>
+    
+    <!-- Projetos teste -->
+    <ProjetoTeste Include="$(PastaSolution)\ProjetoTeste\ProjetoTeste.csproj" />
+
+  </ItemGroup>
+
+  <!-- TARGET Release 
+  Compila os projetos especificados, gera estrutura de pastas especificada e copia os arquivos compilados para as pastas de release -->
+  <Target Name="Release">
+
+    <!-- Compila projetos -->
+    <MSBuild Projects="@(Projeto)" Properties="Configuration=$(Configuration);Platform=$(Platform)" Targets="Rebuild" ContinueOnError="false" />
+    
+    <!-- Cria estrutura de pastas -->
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="CriaEstruturaPastaParaRelease" />
+
+    <!-- Realiza clean nas pastas de projetos -->
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="CleanRelease" />
+
+    <!-- Cria estrutura de pastas para os projetos -->
+    <MakeDir Directories="$(PastaInstalacao)\%(Projeto.Numero).%(Projeto.PastaDestino)" />
+
+    <!-- Copia arquivos do projeto para a pasta destino -->
+    <MSBuild Projects="$(MSBuildProjectFile)"
+             Properties="PastaOrigem=%(Projeto.RelativeDir)\$(OutputPath)\$(Configuration);PastaDestino=$(PastaInstalacao)\%(Projeto.Numero).%(Projeto.PastaDestino)" 
+             Targets="CopiaArquivosParaRelease" />
+    
+  </Target>
+
+  <!-- TARGET Publish 
+  Realiza publish de projetos web -->
+  <Target Name="Publish">
+
+    <!-- Compila projetos web -->
+    <MSBuild Projects="@(ProjetoWeb)" Properties="Configuration=$(Configuration);Platform=$(Platform)" Targets="Rebuild" ContinueOnError="false" />
+
+    <!-- Cria estrutura de pastas -->
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="CriaEstruturaPastaParaRelease" />
+
+    <!-- Realiza clean nas pastas de projetos web -->
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="CleanPublish" />
+    
+    <!-- Cria estrutura de pastas para os projetos -->
+    <MakeDir Directories="$(PastaInstalacao)\%(ProjetoWeb.Numero).%(ProjetoWeb.PastaDestino)" />
+
+    <!-- Gera o publish dos projetos web -->
+    <MSBuild Projects="%(ProjetoWeb.Identity)" 
+             Properties="Configuration=$(Configuration);Platform=$(Platform);OutDir=$(PastaInstalacao)\%(ProjetoWeb.Numero).%(ProjetoWeb.PastaDestino)\;WebProjectOutputDir=$(PastaInstalacao)\%(ProjetoWeb.Numero).%(ProjetoWeb.PastaDestino)\" 
+             Targets="ResolveReferences;_CopyWebApplication" />
+
+    <ItemGroup>
+
+      <RemoveArquivoPublish Include="$(PastaInstalacao)\%(ProjetoWeb.Numero).%(ProjetoWeb.PastaDestino)\**\*.pdb" />
+      
+    </ItemGroup>
+
+    <!-- Exclui arquivos de debug -->
+    <Delete Files="@(RemoveArquivoPublish)" />
+    
+  </Target>
+
+  <!-- TARGET ReleaseAll 
+  Realiza release de projetos e o publish de projetos web -->
+  <Target Name="ReleaseAll">
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="Release" ContinueOnError="false" />
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="Publish" ContinueOnError="false" />
+  </Target>
+
+  <!-- TARGET CopiaArquivosParaRelease 
+  Copia arquivos de $(PastaOrigem) para $(PastaDestino), exceto *.pdb -->
+  <Target Name="CopiaArquivosParaRelease">
+
+    <Error Condition="$(PastaOrigem) == ''" Text="Pasta de origem nao especificada" />
+    <Error Condition="!Exists('$(PastaOrigem)')" Text="Pasta de origem nao e um diretorio valido: '$(PastaOrigem)'" />
+    <Error Condition="$(PastaDestino) == ''" Text="Pasta de destino nao especificada" />
+    <Error Condition="!Exists('$(PastaDestino)')" Text="Pasta de destino nao e um diretorio valido: '$(PastaDestino)'" />
+    
+    <ItemGroup>
+      <CopiaArquivoRelease Include="$(PastaOrigem)\**\*.*" Exclude="$(PastaOrigem)\**\*.pdb" />
+    </ItemGroup>
+    
+    <!-- Copia os arquivos preservando a estrutura de pastas da pasta origem -->
+    <Copy SourceFiles="@(CopiaArquivoRelease)" DestinationFolder="$(PastaDestino)\%(CopiaArquivoRelease.RecursiveDir)" ContinueOnError="false" SkipUnchangedFiles="false" />
+    
+  </Target>
+
+  <!-- TARGET CriaEstruturaPastaParaRelease
+  Cria a estrutura de pasta para release -->
+  <Target Name="CriaEstruturaPastaParaRelease">
+    
+    <ItemGroup>
+
+      <!-- Novas pastas -->
+      <NovaPastaRelease Include="$(PastaDestino)" />
+      <NovaPastaRelease Include="$(PastaInstalacao)" />
+      <NovaPastaRelease Include="$(PastaScripts)" />
+      <NovaPastaRelease Include="$(PastaAtualizacao)" />
+      <NovaPastaRelease Include="$(PastaInstalador)" />
+      <NovaPastaRelease Include="$(PastaScripts)\FireBird" />
+      <NovaPastaRelease Include="$(PastaScripts)\MySQL" />
+      <NovaPastaRelease Include="$(PastaScripts)\Oracle" />
+      <NovaPastaRelease Include="$(PastaScripts)\PostgreSQL" />
+      <NovaPastaRelease Include="$(PastaScripts)\SqlServer" />
+      <NovaPastaRelease Include="$(PastaScripts)\SqlServer2000" />
+
+    </ItemGroup>
+
+    <MakeDir Directories="@(NovaPastaRelease)" />
+    
+  </Target>
+
+  <!-- TARGET CleanRelease
+  Limpa a geracao do release de projetos -->
+  <Target Name="CleanRelease">
+    
+    <ItemGroup>
+
+      <RemoveDiretorioRelease Include="$(PastaInstalacao)\%(Projeto.Numero).%(Projeto.PastaDestino)\" />
+      
+    </ItemGroup>
+
+    <RemoveDir Directories="@(RemoveDiretorioRelease)" ContinueOnError="true" />
+    
+  </Target>
+
+  <!-- TARGET CleanPublish
+  Limpa a geracao do publish de projetos web -->
+  <Target Name="CleanPublish">
+
+    <ItemGroup>
+
+      <RemoveDiretorioPublish Include="$(PastaInstalacao)\%(ProjetoWeb.Numero).%(ProjetoWeb.PastaDestino)\" />
+
+    </ItemGroup>
+
+    <RemoveDir Directories="@(RemoveDiretorioPublish)" ContinueOnError="true" />
+    
+  </Target>
+
+  <!-- TARGET CleanAll
+  Limpa release de projetos e o publish de projetos web -->
+  <Target Name="CleanAll">
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="CleanRelease" />
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="CleanPublish" />
+  </Target>
+
+  <!-- TARGET RunTests
+  Realiza teste unitario em todos os projetos ou nos projetos informados -->
+  <Target Name="RunTests">
+    
+    <!-- Compila projetos teste -->
+    <MSBuild Projects="@(ProjetoTeste)" Properties="ProjectConfiguration=$(ConfigurationTeste)" Targets="Rebuild" ContinueOnError="false" />
+    
+    <CreateItem Include="%(ProjetoTeste.RelativeDir)\$(OutputPathTeste)\$(ConfigurationTeste)\%(ProjetoTeste.Filename).dll">
+      <Output TaskParameter="Include" ItemName="ProjetoTesteDLL" />
+    </CreateItem>
+    
+    <!-- Realiza testes unitarios dos projetos -->
+    <NUnit Assemblies="@(ProjetoTesteDLL)" ToolPath="$(NUnitToolPath)" />
+  
+  </Target>
+  
+</Project>
