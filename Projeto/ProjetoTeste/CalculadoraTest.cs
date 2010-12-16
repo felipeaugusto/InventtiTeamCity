@@ -17,9 +17,21 @@ namespace ProjetoTeste
         }
 
         [Test]
-        public void DeveSomarCorretamente()
+        public void DeveSomarCorretamenteNumerosPositivos()
         {
             calculadora.Soma(1, 1).Should().Be(2);
+        }
+
+        [Test]
+        public void DeveSomarCorretamenteNumerosNegativos()
+        {
+            calculadora.Soma(-1, -1).Should().Be(-2);
+        }
+
+        [Test]
+        public void DeveSomarCorretamenteNumeroPositivoComNegativo()
+        {
+            calculadora.Soma(1, -1).Should().Be(0);
         }
     }
 }
