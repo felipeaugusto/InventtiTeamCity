@@ -7,7 +7,7 @@
     <Versao Condition=" '$(Versao)' == '' ">undefined</Versao>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <OutputPath Condition=" '$(OutputPath)' == '' ">bin\$(Platform)</OutputPath>
+    <OutputPath Condition=" '$(OutputPath)' == '' ">bin</OutputPath>
     <PastaVersaoWebTargets Condition=" '$(PastaVersaoWebTargets)' == '' ">v10.0</PastaVersaoWebTargets>
     <DrivePadrao Condition=" '$(DrivePadrao)' == '' ">$(HOMEDRIVE)</DrivePadrao>
     
@@ -44,7 +44,7 @@
 
     <!-- Projetos -->
     <Projeto Include="$(PastaSolution)\Projeto\Projeto.csproj">
-      <Numero>1</Numero>
+      <Numero>2</Numero>
       <PastaDestino>Projeto</PastaDestino>
     </Projeto>
 
