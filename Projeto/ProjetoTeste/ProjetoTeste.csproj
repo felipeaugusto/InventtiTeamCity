@@ -6,7 +6,7 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{4B1821B8-CB74-4178-9BC3-1DA24D726C3F}</ProjectGuid>
+    <ProjectGuid>{D52BBB95-948C-450C-B64C-F1D0B89F23A3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ProjetoTeste</RootNamespace>
@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.5.3.9345, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="nunit.framework, Version=2.5.9.10344, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
     <Reference Include="SharpTestsEx">
       <HintPath>..\..\..\..\Users\felipe\Documents\Visual Studio 2010\Projects\LogAn\LogAnTest\lib\SharpTestsEx.dll</HintPath>
     </Reference>
