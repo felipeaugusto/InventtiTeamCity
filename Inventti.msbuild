@@ -206,17 +206,15 @@
   Realiza teste unitario em todos os projetos ou nos projetos informados -->
   <Target Name="RunTests">
     
-    <!-- Compila projetos teste 
+    <!-- Compila projetos teste -->
     <MSBuild Projects="@(ProjetoTeste)" Properties="ProjectConfiguration=$(ConfigurationTeste)" Targets="Rebuild" ContinueOnError="false" />
     
     <CreateItem Include="%(ProjetoTeste.RelativeDir)\$(OutputPathTeste)\$(ConfigurationTeste)\%(ProjetoTeste.Filename).dll">
       <Output TaskParameter="Include" ItemName="ProjetoTesteDLL" />
-    </CreateItem>-->
+    </CreateItem>
     
-    <!-- Realiza testes unitarios dos projetos
-    <NUnit Assemblies="@(ProjetoTesteDLL)" /> -->
-
-    <Message Text="Variavel do NUnit: $(teamcity_dotnet_nunitlauncher_msbuild_task)" />
+    <!-- Realiza testes unitarios dos projetos -->
+    <NUnit Assemblies="@(ProjetoTesteDLL)" />
   
   </Target>
   
