@@ -8,18 +8,9 @@
   <!-- Importa targets web para utilizar em deploy e publish, por exemplo -->
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\$(PastaVersaoWebTargets)\WebApplications\Microsoft.WebApplication.targets" />
 
-  <!-- Geracao de versao baseada no arquivo version.txt -->
-  <Version VersionFile="version.txt" BuildType="Automatic" RevisionType="BuildIncrement">
-    <Output TaskParameter="Major" PropertyName="Major" />
-    <Output TaskParameter="Minor" PropertyName="Minor" />
-    <Output TaskParameter="Build" PropertyName="Build" />
-    <Output TaskParameter="Revision" PropertyName="Revision" />
-  </Version>
+ <PropertyGroup>
 
-  <PropertyGroup>
-
-    <Versao Condition=" '$(Versao)' == '' ">$(Major).$(Revision)</Versao>
-    <Versao Condition=" '$(Versao)' == '.' ">undefined</Versao>
+    <Versao Condition=" '$(Versao)' == '' ">undefined</Versao>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputPath Condition=" '$(OutputPath)' == '' ">bin</OutputPath>
