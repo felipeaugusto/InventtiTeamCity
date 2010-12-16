@@ -2,8 +2,6 @@
 
 <Project DefaultTargets="ReleaseAll" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   
-  <UsingTask TaskName="NUnit" Condition=" '$(teamcity_dotnet_nunitlauncher_msbuild_task)' != '' " AssemblyFile="$(teamcity_dotnet_nunitlauncher_msbuild_task)"/>
-  
   <PropertyGroup>
 
     <Versao Condition=" '$(Versao)' == '' ">undefined</Versao>
@@ -41,6 +39,9 @@
 
   <!-- Importa targets web para utilizar em deploy e publish, por exemplo -->
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\$(PastaVersaoWebTargets)\WebApplications\Microsoft.WebApplication.targets" />
+
+  <!-- Sobreescreve o NUnit do MSBuild Community com o do TeamCity -->
+  <UsingTask TaskName="NUnit" Condition=" '$(teamcity_dotnet_nunitlauncher_msbuild_task)' != '' " AssemblyFile="$(teamcity_dotnet_nunitlauncher_msbuild_task)"/>
 
   <ItemGroup>
 
