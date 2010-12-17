@@ -4,12 +4,12 @@
   
   <PropertyGroup>
 
-    <Versao Condition=" '$(Versao)' == '' ">undefined</Versao>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputPath Condition=" '$(OutputPath)' == '' ">bin</OutputPath>
     <PastaVersaoWebTargets Condition=" '$(PastaVersaoWebTargets)' == '' ">v10.0</PastaVersaoWebTargets>
     <DrivePadrao Condition=" '$(DrivePadrao)' == '' ">$(HOMEDRIVE)</DrivePadrao>
+    <PastaRelease Condition=" '$(PastaRelease)' == '' ">$(DrivePadrao)\Users\felipe\Inventti</PastaRelease>
     
     <!-- Testes -->
     <NUnitToolPath Condition=" '$(NUnitToolPath)' == '' ">$(DrivePadrao)\Program Files\NUnit 2.5.9\bin\net-2.0</NUnitToolPath>
@@ -21,16 +21,6 @@
     <PastaSolution Condition=" '$(PastaSolution)' == '' ">$(DrivePadrao)\Dev\InventtiTeamCity\Projeto</PastaSolution>
     <ArquivoSolution Condition=" '$(ArquivoSolution)' == '' ">Projeto.sln</ArquivoSolution>
     <Solution>$(PastaSolution)\$(ArquivoSolution)</Solution>
-
-    <!-- Pastas release -->
-    <PastaRelease Condition=" '$(PastaRelease)' == '' ">$(DrivePadrao)\Users\felipe\Inventti</PastaRelease>
-    <PastaVersao>v_$(Versao)</PastaVersao>
-    <PastaDestino>$(PastaRelease)\$(PastaVersao)</PastaDestino>
-
-    <PastaInstalacao>$(PastaDestino)\1.Instalação</PastaInstalacao>
-    <PastaScripts>$(PastaInstalacao)\1.ScriptsNfePack</PastaScripts>
-    <PastaAtualizacao>$(PastaDestino)\2.Atualização</PastaAtualizacao>
-    <PastaInstalador>$(PastaDestino)\3.Instalador</PastaInstalador>
     
   </PropertyGroup>
 
@@ -69,6 +59,9 @@
     <!-- Compila projetos -->
     <MSBuild Projects="@(Projeto)" Properties="Configuration=$(Configuration);Platform=$(Platform)" Targets="Rebuild" ContinueOnError="false" />
     
+    <!-- Define o numero da versao a gerar -->
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="GeraNovaVersao" />
+    
     <!-- Cria estrutura de pastas -->
     <MSBuild Projects="$(MSBuildProjectFile)" Targets="CriaEstruturaPastaParaRelease" />
 
@@ -91,6 +84,9 @@
 
     <!-- Compila projetos web -->
     <MSBuild Projects="@(ProjetoWeb)" Properties="Configuration=$(Configuration);Platform=$(Platform)" Targets="Rebuild" ContinueOnError="false" />
+
+    <!-- Define o numero da versao a gerar -->
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="GeraNovaVersao" />
 
     <!-- Cria estrutura de pastas -->
     <MSBuild Projects="$(MSBuildProjectFile)" Targets="CriaEstruturaPastaParaRelease" />
@@ -216,6 +212,34 @@
     <!-- Realiza testes unitarios dos projetos -->
     <NUnit Assemblies="@(ProjetoTesteDLL)" ToolPath="$(NUnitToolPath)" />
   
+  </Target>
+
+  <!-- TARGET GeraNovaVersao 
+  Gera numero da proxima versao baseado no arquivo versao.txt -->
+  <Target Name="GeraNovaVersao" Condition=" '$(Versao)' == '' ">
+    
+    <Version VersionFile="versao.txt" BuildType="Automatic" RevisionType="Increment">
+      <Output TaskParameter="Major" PropertyName="Major" />
+      <Output TaskParameter="Minor" PropertyName="Minor" />
+      <Output TaskParameter="Build" PropertyName="Build" />
+      <Output TaskParameter="Revision" PropertyName="Revision" />
+    </Version>
+
+    <PropertyGroup>
+      
+      <Versao>$(Major).$(Revision)</Versao>
+      <Versao Condition=" '$(Versao)' == '.' ">undefined</Versao>
+
+      <PastaVersao>v_$(Versao)</PastaVersao>
+      <PastaDestino>$(PastaRelease)\$(PastaVersao)</PastaDestino>
+
+      <PastaInstalacao>$(PastaDestino)\1.Instalação</PastaInstalacao>
+      <PastaScripts>$(PastaInstalacao)\1.ScriptsNfePack</PastaScripts>
+      <PastaAtualizacao>$(PastaDestino)\2.Atualização</PastaAtualizacao>
+      <PastaInstalador>$(PastaDestino)\3.Instalador</PastaInstalador>
+      
+    </PropertyGroup>
+    
   </Target>
   
 </Project>
