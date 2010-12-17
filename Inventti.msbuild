@@ -214,7 +214,7 @@
     </CreateItem>
     
     <!-- Realiza testes unitarios dos projetos -->
-    <NUnit Assemblies="@(ProjetoTesteDLL)" />
+    <NUnit Assemblies="@(ProjetoTesteDLL)" ToolPath="$(NUnitToolPath)" />
   
   </Target>
   
