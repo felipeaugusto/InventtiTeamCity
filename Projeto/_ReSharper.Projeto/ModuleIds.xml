@@ -1,6 +1,5 @@
 <Modules>
   <Module PersistentId="A92B6A03-4E1C-47D8-8B8D-56A759346A1B" ModuleId="Projeto" />
-  <Module PersistentId="4B1821B8-CB74-4178-9BC3-1DA24D726C3F" ModuleId="ProjetoTeste" />
   <Module PersistentId="6B8EB527-9C25-4011-B597-9C8EDDF8E128" ModuleId="ProjetoWeb" />
   <Module PersistentId="D52BBB95-948C-450C-B64C-F1D0B89F23A3" ModuleId="ProjetoTeste_1" />
 </Modules>

@@ -8,8 +8,10 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputPath Condition=" '$(OutputPath)' == '' ">bin</OutputPath>
     <PastaVersaoWebTargets Condition=" '$(PastaVersaoWebTargets)' == '' ">v10.0</PastaVersaoWebTargets>
+    <PastaVersaoExtensionPath Condition=" '$(PastaVersaoExtensionPath)' == '' ">4.0</PastaVersaoExtensionPath>
     <DrivePadrao Condition=" '$(DrivePadrao)' == '' ">$(HOMEDRIVE)</DrivePadrao>
     <PastaRelease Condition=" '$(PastaRelease)' == '' ">$(DrivePadrao)\Users\felipe\Inventti</PastaRelease>
+    <ProjetoVersao Condition=" '$(ProjetoVersao)' == '' ">Projeto</ProjetoVersao>
     
     <!-- Testes -->
     <NUnitToolPath Condition=" '$(NUnitToolPath)' == '' ">$(DrivePadrao)\Program Files\NUnit 2.5.9\bin\net-2.0</NUnitToolPath>
@@ -27,13 +29,19 @@
   <!-- Importa targets web para utilizar em deploy e publish, por exemplo -->
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\$(PastaVersaoWebTargets)\WebApplications\Microsoft.WebApplication.targets" />
 
-  <!-- Importa targets do MSBuild para utilizar em testes unitarios, por exemplo  -->
+  <!-- Importa targets do MSBuild para utilizar em testes unitarios, por exemplo -->
   <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets"/>
+
+  <!-- Importa targets de extensoes para MSBuild -->
+  <Import Project="$(MSBuildExtensionsPath)\ExtensionPack\$(PastaVersaoExtensionPath)\MSBuild.ExtensionPack.tasks" />
 
   <!-- Sobreescreve o NUnit do MSBuild Community com o do TeamCity -->
   <UsingTask TaskName="NUnit" Condition=" '$(teamcity_dotnet_nunitlauncher_msbuild_task)' != '' " AssemblyFile="$(teamcity_dotnet_nunitlauncher_msbuild_task)" />
 
   <ItemGroup>
+
+    <!-- Executavel com a versao a ser gerada -->
+    <ArquivoAssemblyVersao Include="$(PastaSolution)\$(ProjetoVersao)\$(OutputPath)\$(Configuration)\$(ProjetoVersao).exe" />
 
     <!-- Projetos -->
     <Projeto Include="$(PastaSolution)\Projeto\Projeto.csproj">
@@ -60,7 +68,7 @@
     <MSBuild Projects="@(Projeto)" Properties="Configuration=$(Configuration);Platform=$(Platform)" Targets="Rebuild" ContinueOnError="false" />
     
     <!-- Define o numero da versao a gerar -->
-    <MSBuild Projects="$(MSBuildProjectFile)" Targets="GeraNovaVersao" />
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="ObtemVersao" />
     
     <!-- Cria estrutura de pastas -->
     <MSBuild Projects="$(MSBuildProjectFile)" Targets="CriaEstruturaPastaParaRelease" />
@@ -80,13 +88,13 @@
 
   <!-- TARGET Publish 
   Realiza publish de projetos web -->
-  <Target Name="Publish">
+  <Target Name="Publish" DependsOnTargets="Release">
 
     <!-- Compila projetos web -->
     <MSBuild Projects="@(ProjetoWeb)" Properties="Configuration=$(Configuration);Platform=$(Platform)" Targets="Rebuild" ContinueOnError="false" />
 
     <!-- Define o numero da versao a gerar -->
-    <MSBuild Projects="$(MSBuildProjectFile)" Targets="GeraNovaVersao" />
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="ObtemVersao" />
 
     <!-- Cria estrutura de pastas -->
     <MSBuild Projects="$(MSBuildProjectFile)" Targets="CriaEstruturaPastaParaRelease" />
@@ -214,20 +222,31 @@
   
   </Target>
 
-  <!-- TARGET GeraNovaVersao 
-  Gera numero da proxima versao baseado no arquivo versao.txt -->
-  <Target Name="GeraNovaVersao" Condition=" '$(Versao)' == '' ">
-    
-    <Version VersionFile="versao.txt" BuildType="Automatic" RevisionType="Increment">
-      <Output TaskParameter="Major" PropertyName="Major" />
-      <Output TaskParameter="Minor" PropertyName="Minor" />
-      <Output TaskParameter="Build" PropertyName="Build" />
-      <Output TaskParameter="Revision" PropertyName="Revision" />
-    </Version>
+  <!-- TARGET ObtemVersao 
+  Recupera versao do executavel configurado em $(ArquivoAssemblyVersao) -->
+  <Target Name="ObtemVersao" Condition=" '$(Versao)' == '' ">
 
+    <GetAssemblyIdentity AssemblyFiles="%(ArquivoAssemblyVersao.Identity)">
+      <Output TaskParameter="Assemblies" ItemName="ExecutavelVersao" />
+    </GetAssemblyIdentity>
+
+    <MSBuild.ExtensionPack.Framework.TextString TaskAction="Split" String1="%(ExecutavelVersao.Version)" String2=".">
+      <Output TaskParameter="Strings" ItemName="VersaoSplit" />
+    </MSBuild.ExtensionPack.Framework.TextString>
+
+    <MSBuild.ExtensionPack.Framework.MsBuildHelper TaskAction="GetItem" InputItems1="@(VersaoSplit)" Position="0">
+      <Output TaskParameter="OutputItems" ItemName="Major" />
+    </MSBuild.ExtensionPack.Framework.MsBuildHelper >
+
+    <MSBuild.ExtensionPack.Framework.MsBuildHelper TaskAction="GetItem" InputItems1="@(VersaoSplit)" Position="1">
+      <Output TaskParameter="OutputItems" ItemName="Minor" />
+    </MSBuild.ExtensionPack.Framework.MsBuildHelper >
+
+    <Message Text="Versao: @(Major).@(Minor)" />
+    
     <PropertyGroup>
       
-      <Versao>$(Major).$(Revision)</Versao>
+      <Versao>@(Major).@(Minor)</Versao>
       <Versao Condition=" '$(Versao)' == '.' ">undefined</Versao>
 
       <PastaVersao>v_$(Versao)</PastaVersao>
