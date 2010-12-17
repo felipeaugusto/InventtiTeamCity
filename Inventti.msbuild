@@ -242,8 +242,6 @@
       <Output TaskParameter="OutputItems" ItemName="Minor" />
     </MSBuild.ExtensionPack.Framework.MsBuildHelper >
 
-    <Message Text="Versao: @(Major).@(Minor)" />
-    
     <PropertyGroup>
       
       <Versao>@(Major).@(Minor)</Versao>
