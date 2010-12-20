@@ -31,7 +31,7 @@ namespace ProjetoTeste
         [Test]
         public void DeveSomarCorretamenteNumeroPositivoComNegativo()
         {
-            calculadora.Soma(2, -1).Should().Be(1);
+            calculadora.Soma(2, -2).Should().Be(0);
         }
     }
 }
