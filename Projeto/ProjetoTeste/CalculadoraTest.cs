@@ -8,36 +8,36 @@ namespace ProjetoTeste
     public class CalculadoraTest
     {
 
-        private Calculadora calculadora;
+        private Calculadora _calculadora;
 
         [SetUp]
         public void Setup()
         {
-            calculadora = new Calculadora();
+            _calculadora = new Calculadora();
         }
 
         [Test]
         public void DeveSomarCorretamenteNumerosPositivos()
         {
-            calculadora.Soma(1, 1).Should().Be(2);
+            _calculadora.Soma(1, 1).Should().Be(2);
         }
 
         [Test]
         public void DeveSomarCorretamenteNumerosNegativos()
         {
-            calculadora.Soma(-1, -1).Should().Be(-2);
+            _calculadora.Soma(-1, -1).Should().Be(-2);
         }
 
         [Test]
         public void DeveSomarCorretamenteNumeroPositivoComNegativo()
         {
-            calculadora.Soma(2, -2).Should().Be(0);
+            _calculadora.Soma(2, -2).Should().Be(0);
         }
 
         [Test]
         public void DeveSubtrairCorretamente()
         {
-            calculadora.Subtracao(1, 1).Should().Be(0);
+            _calculadora.Subtracao(1, 1).Should().Be(0);
         }
     }
 }
