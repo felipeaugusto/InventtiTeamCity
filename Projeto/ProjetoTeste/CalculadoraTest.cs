@@ -34,6 +34,7 @@ namespace ProjetoTeste
             calculadora.Soma(2, -2).Should().Be(0);
         }
 
+        [Test]
         public void DeveSubtrairCorretamente()
         {
             calculadora.Subtracao(1, 1).Should().Be(0);
