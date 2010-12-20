@@ -9,12 +9,15 @@
   <RecentFiles>
     <RecentFiles>
       <File id="A92B6A03-4E1C-47D8-8B8D-56A759346A1B/d:Properties/f:AssemblyInfo.cs" caret="0" fromTop="0" />
+      <File id="A92B6A03-4E1C-47D8-8B8D-56A759346A1B/f:Program.cs" caret="0" fromTop="0" />
+      <File id="A92B6A03-4E1C-47D8-8B8D-56A759346A1B/f:Calculadora.cs" caret="0" fromTop="0" />
       <File id="D52BBB95-948C-450C-B64C-F1D0B89F23A3/f:CalculadoraTest.cs" caret="0" fromTop="0" />
     </RecentFiles>
     <RecentEdits>
       <File id="D52BBB95-948C-450C-B64C-F1D0B89F23A3/f:CalculadoraTest.cs" caret="604" fromTop="14" />
       <File id="A92B6A03-4E1C-47D8-8B8D-56A759346A1B/d:Properties/f:AssemblyInfo.cs" caret="1413" fromTop="34" />
-      <File id="D52BBB95-948C-450C-B64C-F1D0B89F23A3/f:CalculadoraTest.cs" caret="767" fromTop="32" />
+      <File id="A92B6A03-4E1C-47D8-8B8D-56A759346A1B/f:Calculadora.cs" caret="245" fromTop="10" />
+      <File id="D52BBB95-948C-450C-B64C-F1D0B89F23A3/f:CalculadoraTest.cs" caret="797" fromTop="29" />
     </RecentEdits>
   </RecentFiles>
   <NAntValidationSettings>
@@ -31,11 +34,11 @@
     <ItemStatistics item="Default">
       <Item value="TestFixture" priority="0" />
       <Item value="SetUp" priority="0" />
-      <Item value="public" priority="1" />
+      <Item value="public" priority="2" />
       <Item value="void" priority="0" />
       <Item value="private" priority="0" />
       <Item value="CalculadoraTest`0" priority="1" />
-      <Item value="calculadora" priority="1" />
+      <Item value="calculadora" priority="2" />
       <Item value="new" priority="0" />
       <Item value="Calculadora" priority="0" />
       <Item value="using" priority="0" />
@@ -47,12 +50,14 @@
     </ItemStatistics>
     <ItemStatistics item="Qualified:Projeto.Calculadora">
       <Item value="Soma`0" priority="0" />
+      <Item value="Subtracao`0" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:System.Single">
-      <Item value="Should`0" priority="0" />
+      <Item value="Should`0" priority="1" />
+      <Item value="CompareTo`0" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:SharpTestsEx.IComparableConstraints`1">
-      <Item value="Be" priority="0" />
+      <Item value="Be" priority="1" />
     </ItemStatistics>
   </CompletionStatisticsManager>
 </Configuration>
