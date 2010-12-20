@@ -35,9 +35,21 @@ namespace ProjetoTeste
         }
 
         [Test]
-        public void DeveSubtrairCorretamente()
+        public void DeveSubtrairCorretamenteNumerosPositivos()
         {
             _calculadora.Subtracao(1, 1).Should().Be(0);
+        }
+
+        [Test]
+        public void DeveSubtrairCorretamenteNumerosNegativos()
+        {
+            _calculadora.Subtracao(-1, -1).Should().Be(0);
+        }
+
+        [Test]
+        public void DeveSubtrairCorretamenteNumeroPositivoComNegativo()
+        {
+            _calculadora.Subtracao(-1, 1).Should().Be(-2);
         }
     }
 }
