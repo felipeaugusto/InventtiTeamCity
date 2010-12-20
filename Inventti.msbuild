@@ -55,7 +55,9 @@
     <ProjetoTeste Include="$(PastaSolution)\ProjetoTeste\ProjetoTeste.csproj" />
 
     <!-- Projeto da versao -->
-    <ProjetoVersao Include="$(PastaSolution)\Projeto\Projeto.csproj" />
+    <ProjetoVersao Include="$(PastaSolution)\Projeto\Projeto.csproj">
+      <Extensao>exe</Extensao>
+    </ProjetoVersao>
 
   </ItemGroup>
   
@@ -264,7 +266,7 @@
   Recupera versao do executavel configurado em $(ArquivoAssemblyVersao) -->
   <Target Name="ObtemVersao" Condition=" '$(Versao)' == '' ">
 
-    <GetAssemblyIdentity AssemblyFiles="%(ProjetoVersao.RelativeDir)\$(OutputPath)\$(Configuration)\%(ProjetoVersao.Filename).exe">
+    <GetAssemblyIdentity AssemblyFiles="%(ProjetoVersao.RelativeDir)\$(OutputPath)\$(Configuration)\%(ProjetoVersao.Filename).%(ProjetoVersao.Extensao)">
       <Output TaskParameter="Assemblies" ItemName="ExecutavelVersao" />
     </GetAssemblyIdentity>
 
