@@ -11,7 +11,6 @@
     <PastaVersaoExtensionPath Condition=" '$(PastaVersaoExtensionPath)' == '' ">4.0</PastaVersaoExtensionPath>
     <DrivePadrao Condition=" '$(DrivePadrao)' == '' ">$(HOMEDRIVE)</DrivePadrao>
     <PastaRelease Condition=" '$(PastaRelease)' == '' ">$(DrivePadrao)\Users\felipe\Inventti</PastaRelease>
-    <ProjetoVersao Condition=" '$(ProjetoVersao)' == '' ">Projeto</ProjetoVersao>
     
     <!-- Testes -->
     <NUnitToolPath Condition=" '$(NUnitToolPath)' == '' ">$(DrivePadrao)\Program Files\NUnit 2.5.9\bin\net-2.0</NUnitToolPath>
@@ -35,13 +34,10 @@
   <!-- Importa targets de extensoes para MSBuild -->
   <Import Project="$(MSBuildExtensionsPath)\ExtensionPack\$(PastaVersaoExtensionPath)\MSBuild.ExtensionPack.tasks" />
 
-  <!-- Sobreescreve o NUnit do MSBuild Community com o do TeamCity -->
+  <!-- Sobreescreve o NUnit do MSBuild Community com o do TeamCity, caso esteja sendo executado -->
   <UsingTask TaskName="NUnit" Condition=" '$(teamcity_dotnet_nunitlauncher_msbuild_task)' != '' " AssemblyFile="$(teamcity_dotnet_nunitlauncher_msbuild_task)" />
 
   <ItemGroup>
-
-    <!-- Executavel com a versao a ser gerada -->
-    <ArquivoAssemblyVersao Include="$(PastaSolution)\$(ProjetoVersao)\$(OutputPath)\$(Configuration)\$(ProjetoVersao).exe" />
 
     <!-- Projetos -->
     <Projeto Include="$(PastaSolution)\Projeto\Projeto.csproj">
@@ -58,17 +54,20 @@
     <!-- Projetos teste -->
     <ProjetoTeste Include="$(PastaSolution)\ProjetoTeste\ProjetoTeste.csproj" />
 
-  </ItemGroup>
+    <!-- Projeto da versao -->
+    <ProjetoVersao Include="$(PastaSolution)\Projeto\Projeto.csproj" />
 
+  </ItemGroup>
+  
   <!-- TARGET Release 
   Compila os projetos especificados, gera estrutura de pastas especificada e copia os arquivos compilados para as pastas de release -->
-  <Target Name="Release">
+  <Target Name="Release" DependsOnTargets="CompilaProjetoVersao">
+
+    <!-- Define o numero da versao a gerar -->
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="ObtemVersao" />
 
     <!-- Compila projetos -->
     <MSBuild Projects="@(Projeto)" Properties="Configuration=$(Configuration);Platform=$(Platform)" Targets="Rebuild" ContinueOnError="false" />
-    
-    <!-- Define o numero da versao a gerar -->
-    <MSBuild Projects="$(MSBuildProjectFile)" Targets="ObtemVersao" />
     
     <!-- Cria estrutura de pastas -->
     <MSBuild Projects="$(MSBuildProjectFile)" Targets="CriaEstruturaPastaParaRelease" />
@@ -88,13 +87,13 @@
 
   <!-- TARGET Publish 
   Realiza publish de projetos web -->
-  <Target Name="Publish" DependsOnTargets="Release">
-
-    <!-- Compila projetos web -->
-    <MSBuild Projects="@(ProjetoWeb)" Properties="Configuration=$(Configuration);Platform=$(Platform)" Targets="Rebuild" ContinueOnError="false" />
+  <Target Name="Publish" DependsOnTargets="CompilaProjetoVersao">
 
     <!-- Define o numero da versao a gerar -->
     <MSBuild Projects="$(MSBuildProjectFile)" Targets="ObtemVersao" />
+
+    <!-- Compila projetos web -->
+    <MSBuild Projects="@(ProjetoWeb)" Properties="Configuration=$(Configuration);Platform=$(Platform)" Targets="Rebuild" ContinueOnError="false" />
 
     <!-- Cria estrutura de pastas -->
     <MSBuild Projects="$(MSBuildProjectFile)" Targets="CriaEstruturaPastaParaRelease" />
@@ -126,6 +125,15 @@
   <Target Name="ReleaseAll">
     <MSBuild Projects="$(MSBuildProjectFile)" Targets="Release" ContinueOnError="false" />
     <MSBuild Projects="$(MSBuildProjectFile)" Targets="Publish" ContinueOnError="false" />
+  </Target>
+
+  <!-- TARGET CompilaProjetoVersao 
+  Compila o projeto que contem a versao do sistema -->
+  <Target Name="CompilaProjetoVersao">
+
+    <!-- Compila projeto -->
+    <MSBuild Projects="@(ProjetoVersao)" Properties="Configuration=$(Configuration);Platform=$(Platform)" Targets="Rebuild" ContinueOnError="false" />
+    
   </Target>
 
   <!-- TARGET CopiaArquivosParaRelease 
@@ -174,6 +182,9 @@
   <!-- TARGET CleanRelease
   Limpa a geracao do release de projetos -->
   <Target Name="CleanRelease">
+
+    <!-- Define o numero da versao onde executara a limpeza -->
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="ObtemVersao" />
     
     <ItemGroup>
 
@@ -188,6 +199,9 @@
   <!-- TARGET CleanPublish
   Limpa a geracao do publish de projetos web -->
   <Target Name="CleanPublish">
+
+    <!-- Define o numero da versao onde executara a limpeza -->
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="ObtemVersao" />
 
     <ItemGroup>
 
@@ -226,7 +240,7 @@
   Recupera versao do executavel configurado em $(ArquivoAssemblyVersao) -->
   <Target Name="ObtemVersao" Condition=" '$(Versao)' == '' ">
 
-    <GetAssemblyIdentity AssemblyFiles="%(ArquivoAssemblyVersao.Identity)">
+    <GetAssemblyIdentity AssemblyFiles="%(ProjetoVersao.RelativeDir)\$(OutputPath)\$(Configuration)\%(ProjetoVersao.Filename).exe">
       <Output TaskParameter="Assemblies" ItemName="ExecutavelVersao" />
     </GetAssemblyIdentity>
 
