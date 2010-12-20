@@ -67,8 +67,8 @@
     <MSBuild Projects="$(MSBuildProjectFile)" Targets="ObtemVersao" />
 
     <!-- Compila projetos -->
-    <MSBuild Projects="@(Projeto)" Properties="Configuration=$(Configuration);Platform=$(Platform)" Targets="Rebuild" ContinueOnError="false" />
-    
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="CompilaProjeto" />
+
     <!-- Cria estrutura de pastas -->
     <MSBuild Projects="$(MSBuildProjectFile)" Targets="CriaEstruturaPastaParaRelease" />
 
@@ -93,7 +93,7 @@
     <MSBuild Projects="$(MSBuildProjectFile)" Targets="ObtemVersao" />
 
     <!-- Compila projetos web -->
-    <MSBuild Projects="@(ProjetoWeb)" Properties="Configuration=$(Configuration);Platform=$(Platform)" Targets="Rebuild" ContinueOnError="false" />
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="CompilaProjetoWeb" />
 
     <!-- Cria estrutura de pastas -->
     <MSBuild Projects="$(MSBuildProjectFile)" Targets="CriaEstruturaPastaParaRelease" />
@@ -127,11 +127,29 @@
     <MSBuild Projects="$(MSBuildProjectFile)" Targets="Publish" ContinueOnError="false" />
   </Target>
 
+  <!-- TARGET CompilaProjeto 
+  Compila os projetos referentes ao item Projeto -->
+  <Target Name="CompilaProjeto">
+
+    <!-- Compila projetos -->
+    <MSBuild Projects="@(Projeto)" Properties="Configuration=$(Configuration);Platform=$(Platform)" Targets="Rebuild" ContinueOnError="false" />
+
+  </Target>
+
+  <!-- TARGET CompilaProjetoWeb 
+  Compila os projetos web referentes ao item ProjetoWeb -->
+  <Target Name="CompilaProjetoWeb">
+
+    <!-- Compila projetos web -->
+    <MSBuild Projects="@(ProjetoWeb)" Properties="Configuration=$(Configuration);Platform=$(Platform)" Targets="Rebuild" ContinueOnError="false" />
+
+  </Target>
+
   <!-- TARGET CompilaProjetoVersao 
   Compila o projeto que contem a versao do sistema -->
   <Target Name="CompilaProjetoVersao">
 
-    <!-- Compila projeto -->
+    <!-- Compila projeto versao -->
     <MSBuild Projects="@(ProjetoVersao)" Properties="Configuration=$(Configuration);Platform=$(Platform)" Targets="Rebuild" ContinueOnError="false" />
     
   </Target>
@@ -223,6 +241,12 @@
   <!-- TARGET RunTests
   Realiza teste unitario em todos os projetos ou nos projetos informados -->
   <Target Name="RunTests">
+
+    <!-- Compila projetos -->
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="CompilaProjeto" />
+
+    <!-- Compila projetos web -->
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="CompilaProjetoWeb" />
     
     <!-- Compila projetos teste -->
     <MSBuild Projects="@(ProjetoTeste)" Properties="ProjectConfiguration=$(ConfigurationTeste)" Targets="Rebuild" ContinueOnError="false" />
@@ -244,18 +268,22 @@
       <Output TaskParameter="Assemblies" ItemName="ExecutavelVersao" />
     </GetAssemblyIdentity>
 
+    <!-- Transforma a string da versao em uma lista -->
     <MSBuild.ExtensionPack.Framework.TextString TaskAction="Split" String1="%(ExecutavelVersao.Version)" String2=".">
       <Output TaskParameter="Strings" ItemName="VersaoSplit" />
     </MSBuild.ExtensionPack.Framework.TextString>
 
+    <!-- Recupera a posicao major da versao, exemplo da versao 1.2.3.4, retorna o numero 1 -->
     <MSBuild.ExtensionPack.Framework.MsBuildHelper TaskAction="GetItem" InputItems1="@(VersaoSplit)" Position="0">
       <Output TaskParameter="OutputItems" ItemName="Major" />
     </MSBuild.ExtensionPack.Framework.MsBuildHelper >
 
+    <!-- Recupera a posicao minor da versao, exemplo da versao 1.2.3.4, retorna o numero 2 -->
     <MSBuild.ExtensionPack.Framework.MsBuildHelper TaskAction="GetItem" InputItems1="@(VersaoSplit)" Position="1">
       <Output TaskParameter="OutputItems" ItemName="Minor" />
     </MSBuild.ExtensionPack.Framework.MsBuildHelper >
 
+    <!-- Define as propriedades da versao -->
     <PropertyGroup>
       
       <Versao>@(Major).@(Minor)</Versao>
