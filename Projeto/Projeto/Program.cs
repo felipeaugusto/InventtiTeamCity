@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Projeto
+﻿namespace Projeto
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            var calculadora = new Calculadora();
-            calculadora.Soma(1, 1);
+            new Calculadora().Soma(1, 1);
         }
     }
 }
