@@ -19,7 +19,7 @@
     <OutputPathTeste Condition=" '$(OutputPathTeste)' == '' ">bin</OutputPathTeste>
 
     <!-- Solution -->
-    <PastaSolution Condition=" '$(PastaSolution)' == '' ">$(DrivePadrao)\Dev\InventtiTeamCity\Projeto</PastaSolution>
+    <PastaSolution Condition=" '$(PastaSolution)' == '' ">Projeto</PastaSolution>
     <ArquivoSolution Condition=" '$(ArquivoSolution)' == '' ">Projeto.sln</ArquivoSolution>
     <Solution>$(PastaSolution)\$(ArquivoSolution)</Solution>
     
