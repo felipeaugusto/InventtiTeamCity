@@ -10,7 +10,7 @@
     <PastaVersaoWebTargets Condition=" '$(PastaVersaoWebTargets)' == '' ">v10.0</PastaVersaoWebTargets>
     <PastaVersaoExtensionPath Condition=" '$(PastaVersaoExtensionPath)' == '' ">4.0</PastaVersaoExtensionPath>
     <DrivePadrao Condition=" '$(DrivePadrao)' == '' ">$(HOMEDRIVE)</DrivePadrao>
-    <PastaRelease Condition=" '$(PastaRelease)' == '' ">$(DrivePadrao)\Users\felipe\Inventti</PastaRelease>
+    <PastaRelease Condition=" '$(PastaRelease)' == '' ">$(DrivePadrao)\Users\felipe.augusto\Inventti</PastaRelease>
     
     <!-- Testes -->
     <NUnitToolPath Condition=" '$(NUnitToolPath)' == '' ">$(DrivePadrao)\Program Files\NUnit 2.5.9\bin\net-2.0</NUnitToolPath>
