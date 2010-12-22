@@ -49,7 +49,7 @@ namespace ProjetoTeste
         [Test]
         public void DeveSubtrairCorretamenteNumeroPositivoComNegativo()
         {
-            _calculadora.Subtracao(-1, 1).Should().Be(-2);
+            _calculadora.Subtracao(-1, 1).Should().Be(0);
         }
     }
 }
